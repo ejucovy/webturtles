@@ -40,6 +40,11 @@ function World(tableSelector) {
     table.show();
     
     this.turtles = [];
+
+    this.addTurtle = function(row, col, color) {
+	var t = tableturtle(this.table, row, col, color);
+	this.turtles.push(t);
+    };
 };
 
 var processKey = function(event) {
@@ -144,7 +149,6 @@ color = function(turtle, nc) {
 tableturtle = function(table, col, row, color) {
   var pos = cellPos(table, row, col);
   var t = turtle(pos.x, pos.y, color);
-  var cell = table.find("td:first");
   t.pos = {x: col, y: row};
   t.or = {x: 0, y: 1};
   t.table = table;
