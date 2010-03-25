@@ -45,6 +45,19 @@ function World(tableSelector) {
 	var t = tableturtle(this.table, row, col, color);
 	this.turtles.push(t);
     };
+
+    this.step = function() {
+	for( var i = 0; i < this.turtles.length; ++i ) {
+	    processQueue(this.turtles[i]);
+	};
+    };
+    this.run = function() { run(this) };
+};
+
+var run = function(world) {
+    world.step();
+    window.setTimeout(function() { run(world) },
+		      750);
 };
 
 var processKey = function(event) {
@@ -124,13 +137,6 @@ processQueue = function(t) {
     };
   };
   processCmd(cmd);
-};
-
-runWorld = function(ts) {
-  for( var i = 0; i < ts.length; ++i ) {
-      processQueue(ts[i]);
-  };
-  window.setTimeout(function() { runWorld(ts); }, 750);
 };
 
 fetch = function(t, url) {

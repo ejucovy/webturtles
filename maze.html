@@ -35,7 +35,7 @@ $(window).load(function() {
   });
 
   $("button#go").click(function() {
-    runWorld(world.turtles);
+    world.run();
     $(this).text("Running");
     $(this).attr("disabled", "1");
   });
