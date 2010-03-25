@@ -47,7 +47,7 @@ $(window).load(function() {
   world.turtles[1].or.y = -1;
   world.turtles[3].or.y = -1;
   $(world.turtles).each(function() { 
-    this.head.attr(fixHead(this.attr("cx"), this.attr("cy"), this));
+    this.head.attr(fixHead(this.body.attr("cx"), this.body.attr("cy"), this));
   });
   var form = $("#cpanel");
   form[0].style.position = "absolute";

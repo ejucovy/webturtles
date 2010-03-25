@@ -63,22 +63,28 @@ var processKey = function(event) {
   
 };
 
-turtle = function(x, y, color) {
+function Turtle(x, y, color) {
   var seed = world.paper.circle(x, y, 10);
   seed.attr("fill", color);
   seed.attr("stroke", "black");
+
+  this.body = seed;
+
   var line = world.paper.path("M" + x + " " + y);
   line.attr("stroke", color);
   line.attr("stroke-width", 3);
-  seed.line = line;
-  seed.pd = 1;
-  seed.angle = 0;
-  seed.queue = [];
+
+  this.line = line;
+
+  this.pd = 1;
+  this.angle = 0;
+  this.queue = [];
+
   var head = world.paper.circle(x, y+10, 5);
   head.attr("fill", color);
   head.attr("stroke", "black");
-  seed.head = head;
-  return seed;
+
+  this.head = head;
 };
 
 processQueue = function(t) {
@@ -109,7 +115,8 @@ processQueue = function(t) {
      case "move":
       var pos = cellPos(t.table, i[0], i[1]);
       if( !pos ) return;
-      t.pos.x = parseInt(i[1]); t.pos.y = parseInt(i[0]);
+      t.pos.x = parseInt(i[1]);
+      t.pos.y = parseInt(i[0]);
       move(t, pos.x, pos.y);
       break;
      case "color":
@@ -136,10 +143,10 @@ fetch = function(t, url) {
 };
 
 color = function(turtle, nc) {
-  turtle.attr("fill", nc);
+  turtle.body.attr("fill", nc);
   //turtle.attr("stroke", nc);
-  var x = turtle.attr("cx"),
-      y = turtle.attr("cy");
+  var x = turtle.body.attr("cx"),
+      y = turtle.body.attr("cy");
   var line = world.paper.path("M" + x + " " + y);
   line.attr("stroke", nc);
   line.attr("stroke-width", 3);
@@ -148,7 +155,7 @@ color = function(turtle, nc) {
 
 tableturtle = function(table, col, row, color) {
   var pos = cellPos(table, row, col);
-  var t = turtle(pos.x, pos.y, color);
+  var t = new Turtle(pos.x, pos.y, color);
   t.pos = {x: col, y: row};
   t.or = {x: 0, y: 1};
   t.table = table;
@@ -157,9 +164,7 @@ tableturtle = function(table, col, row, color) {
 
 fixHead = function(x, y, t) {
   var head = t.head;
-  var r = t.attr("r");
-  //var x = t.attr("cx"),
-  //    y = t.attr("cy");
+  var r = t.body.attr("r");
 
   var newAttrs = {cx: x + ( t.or.x * r ),
                   cy: y + ( t.or.y * r )};
@@ -185,7 +190,7 @@ accepts = function(cell, t) {
 
 paint = function(t) { 
   var cell = getCell(t.table, t.pos.y, t.pos.x);
-  var c = t.attr("fill");
+  var c = t.body.attr("fill");
   $(cell).css("backgroundColor", c);
   actUpon(cell, t);
 };
@@ -198,11 +203,13 @@ actUpon = function(cell, t) {
     pos = {x: parseInt(pos[1]), y: parseInt(pos[0])};
     t.pos = pos;
     pos = cellPos(t.table, pos.y, pos.x);
-    t.attr("cx", pos.x).attr("cy", pos.y);
+    t.body.attr("cx", pos.x);
+    t.body.attr("cy", pos.y);
     var headPos = fixHead(pos.x, pos.y, t);
     t.head.attr({cx: headPos.cx, cy: headPos.cy});
+
     var line = world.paper.path("M" + pos.x + " " + pos.y);
-    line.attr("stroke", t.attr("fill"));
+    line.attr("stroke", t.body.attr("fill"));
     line.attr("stroke-width", 3);
     t.line = line;
 
@@ -226,37 +233,35 @@ rt = function(t) {
 };
 
 fixHeadNoMove = function(t, noAnimate) {
-      var headPos = fixHead(t.attr("cx"), t.attr("cy"), t); 
-   if( noAnimate ) {
-     t.head.attr(headPos);
-   } else {		     
-      t.head.animate(headPos, 500);
-   }
+    var headPos = fixHead(t.body.attr("cx"),
+			  t.body.attr("cy"),
+			  t); 
+    if( noAnimate ) {
+	t.head.attr(headPos);
+    } else {		     
+	t.head.animate(headPos, 500);
+    }
 };
 
 lf = function(t) {
   if( t.or.x == 1 && t.or.y == 0 ) {
     t.or.x = 0; t.or.y = -1;
     fixHeadNoMove(t);
-//fd(t);
     return;
   };
   if( t.or.x == 0 && t.or.y == -1 ) {
     t.or.x = -1; t.or.y = 0;
     fixHeadNoMove(t);
-    //fd(t);
     return;
   };
   if( t.or.x == -1 && t.or.y == 0 ) {
     t.or.x = 0; t.or.y = 1;
     fixHeadNoMove(t);
-    //fd(t);
     return;
   };
   if( t.or.x == 0 && t.or.y == 1 ) {
     t.or.x = 1; t.or.y = 0;
     fixHeadNoMove(t);
-    //fd(t);
     return;
   };
 };
@@ -266,8 +271,8 @@ fwd = function(turtle, l) {
   angle = angle * Math.PI / 180;
   var x = l * Math.sin(angle);
   var y = l * Math.cos(angle);
-  x = turtle.attr("cx") + x;
-  y = turtle.attr("cy") + y;
+  x = turtle.body.attr("cx") + x;
+  y = turtle.body.attr("cy") + y;
   move(turtle, x, y);
 };
 
@@ -280,13 +285,13 @@ move = function(turtle, x, y, callback) {
   var path = line.attr("path");
   var headPos = fixHead(x, y, turtle);
   if( turtle.pd == 1 ) {
-    turtle.animate({cx: x, cy: y}, 500, _callback);
-    line.animateWith(turtle, {path: path + "L" + x + " " + y}, 500);
-    turtle.head.animateWith(turtle, headPos, 500);
+    turtle.body.animate({cx: x, cy: y}, 500, _callback);
+    line.animateWith(turtle.body, {path: path + "L" + x + " " + y}, 500);
+    turtle.head.animateWith(turtle.body, headPos, 500);
   } else {
-    turtle.animate({cx: x, cy: y}, 500, _callback);
+    turtle.body.animate({cx: x, cy: y}, 500, _callback);
     line.attr("path", path + "M" + x + " " + y);
-    turtle.head.animateWith(turtle, headPos, 500);
+    turtle.head.animateWith(turtle.body, headPos, 500);
   }
 };
 
