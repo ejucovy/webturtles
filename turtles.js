@@ -23,34 +23,53 @@
     return t;
   };
 
+/*
+world.paper -> Raphael canvas
+world.turtles -> [turtle, turtle]
+ */
+function World(tableSelector) {
+    this.table = tableSelector;
+
+    // First set up the canvas aligned to the table.
+    var table = $(tableSelector);
+    table.hide();
+    var w = table.width();
+    var h = table.height();
+    var pos = table.position();
+    this.paper = Raphael(pos.left, pos.top, w, h);
+    table.show();
+    
+    this.turtles = [];
+};
+
 var processKey = function(event) {
   if( event.which == 97 ) {
-    lf(turtles[3]);
+    lf(world.turtles[3]);
   };
   if( event.which == 115 ) {
-    fd(turtles[3]);
+    fd(world.turtles[3]);
   };
   if( event.which == 100 ) {
-    rt(turtles[3]);
+    rt(world.turtles[3]);
   };
   if( event.which == 119 ) {
-    bk(turtles[3]);
+    bk(world.turtles[3]);
   };
   
 };
 
 turtle = function(x, y, color) {
-  var seed = paper.circle(x, y, 10);
+  var seed = world.paper.circle(x, y, 10);
   seed.attr("fill", color);
   seed.attr("stroke", "black");
-  var line = paper.path("M" + x + " " + y);
+  var line = world.paper.path("M" + x + " " + y);
   line.attr("stroke", color);
   line.attr("stroke-width", 3);
   seed.line = line;
   seed.pd = 1;
   seed.angle = 0;
   seed.queue = [];
-  var head = paper.circle(x, y+10, 5);
+  var head = world.paper.circle(x, y+10, 5);
   head.attr("fill", color);
   head.attr("stroke", "black");
   seed.head = head;
@@ -116,7 +135,7 @@ color = function(turtle, nc) {
   //turtle.attr("stroke", nc);
   var x = turtle.attr("cx"),
       y = turtle.attr("cy");
-  var line = paper.path("M" + x + " " + y);
+  var line = world.paper.path("M" + x + " " + y);
   line.attr("stroke", nc);
   line.attr("stroke-width", 3);
   turtle.line = line;
@@ -178,7 +197,7 @@ actUpon = function(cell, t) {
     t.attr("cx", pos.x).attr("cy", pos.y);
     var headPos = fixHead(pos.x, pos.y, t);
     t.head.attr({cx: headPos.cx, cy: headPos.cy});
-    var line = paper.path("M" + pos.x + " " + pos.y);
+    var line = world.paper.path("M" + pos.x + " " + pos.y);
     line.attr("stroke", t.attr("fill"));
     line.attr("stroke-width", 3);
     t.line = line;

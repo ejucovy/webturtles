@@ -6,23 +6,13 @@
     <script src="turtles.js"></script>
 
     <script type="text/javascript">
-var paper;
 var w, h;
-var table;
-var turtles = [];
-
+var world;
 
 $(window).load(function() {
-  table = hbmpize($("pre.hbmp")[0]);
-  //table = $("#grid table");
-  table.hide();
-  w = table.width();
-  h = table.height();
-  var pos = table.position();
-  paper = Raphael(pos.left,
-                  pos.top,
-                  w, h);
-  table.show();
+  var table = hbmpize($("pre.hbmp")[0]);
+  world = new World(table);
+
   $("button").click(function() {
     var cmd = $(this).attr("value");
     var turtle = $("form input[name=turtle]:checked").attr("value");
@@ -32,8 +22,8 @@ $(window).load(function() {
   });
 
   $("button#queue").click(function() {
-    for( var i = 0; i < turtles.length; ++i ) {
-      var turtle = turtles[i];
+    for( var i = 0; i < world.turtles.length; ++i ) {
+      var turtle = world.turtles[i];
       var x = i+1;
       var cmds = $("textarea[name="+x+"]").val();
       cmds = cmds.split("\n");
@@ -45,18 +35,18 @@ $(window).load(function() {
   });
 
   $("button#go").click(function() {
-    runWorld(turtles);
+    runWorld(world.turtles);
     $(this).text("Running");
     $(this).attr("disabled", "1");
   });
 
-  turtles.push(tableturtle(table, 0, 0, "green"));
-  turtles.push(tableturtle(table, cols(table)-1, rows(table)-1, "purple"));
-  turtles.push(tableturtle(table, cols(table)-1, 0, "orange"));
-  turtles.push(tableturtle(table, 0, rows(table)-1, "blue"));
-  turtles[1].or.y = -1;
-  turtles[3].or.y = -1;
-  $(turtles).each(function() { 
+  world.turtles.push(tableturtle(table, 0, 0, "green"));
+  world.turtles.push(tableturtle(table, cols(table)-1, rows(table)-1, "purple"));
+  world.turtles.push(tableturtle(table, cols(table)-1, 0, "orange"));
+  world.turtles.push(tableturtle(table, 0, rows(table)-1, "blue"));
+  world.turtles[1].or.y = -1;
+  world.turtles[3].or.y = -1;
+  $(world.turtles).each(function() { 
     this.head.attr(fixHead(this.attr("cx"), this.attr("cy"), this));
   });
   var form = $("#cpanel");
