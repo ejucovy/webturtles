@@ -4,7 +4,7 @@ var hbmpize = function(pre) {
     var t = $("<table/>").attr("style",
 			       "border: 1px solid black; border-collapse: collapse; display: table;");
     $(rows).each(function() {
-	    if( !this.length ) return; 
+	    if( !this.length ) return;
 	    var r = $("<tr/>").appendTo(t);
 	    var cols = this.split(",");
 	    $(cols).each(function() {
@@ -28,9 +28,9 @@ var hbmpize = function(pre) {
   world.paper -> Raphael canvas
   world.turtles -> [turtle, turtle]
 */
-function World(tableSelector) {
+function World(tableSelector, canLandOnFunc) {
     this.table = tableSelector;
-    
+
     // First set up the canvas aligned to the table.
     var table = $(tableSelector);
     table.hide();
@@ -39,14 +39,14 @@ function World(tableSelector) {
     var pos = table.position();
     this.paper = Raphael(pos.left, pos.top, w, h);
     table.show();
-    
+
     this.turtles = [];
-    
+
     this.addTurtle = function(row, col, color) {
 	var t = tableturtle(this, row, col, color);
 	this.turtles.push(t);
     };
-    
+
     this.step = function() {
 	for( var i = 0; i < this.turtles.length; ++i ) {
 	    processQueue(this.turtles[i]);
@@ -57,10 +57,19 @@ function World(tableSelector) {
     this.numRows = function() {
 	return $(this.table).find("tr").length;
     };
-    
+
     this.numCols = function() {
 	return $(this.table).find("td").length / this.numRows();
     };
+
+    var _canLandOn = function(cell, turtle) {
+      if( $(cell)[0].style.backgroundColor == "black" )
+	return 0;
+      return 1;
+    };
+
+    this.canLandOn = canLandOnFunc || _canLandOn;
+    this.landOn = actUpon;
 };
 
 var run = function(world) {
@@ -71,45 +80,45 @@ var run = function(world) {
 
 var processKey = function(event) {
     if( event.which == 97 ) {
-	lf(world.turtles[3]);
+      world.turtles[3].left();
     };
     if( event.which == 115 ) {
-	fd(world.turtles[3]);
+      world.turtles[3].fwd();
     };
     if( event.which == 100 ) {
-	rt(world.turtles[3]);
+      world.turtles[3].right();
     };
     if( event.which == 119 ) {
-	bk(world.turtles[3]);
+      world.turtles[3].back();
     };
-    
+
 };
 
 function Turtle(x, y, color, world) {
     this.world = world;
-    
+
     var seed = world.paper.circle(x, y, 10);
     seed.attr("fill", color);
     seed.attr("stroke", "black");
-    
+
     this.body = seed;
-    
+
     var line = world.paper.path("M" + x + " " + y);
     line.attr("stroke", color);
     line.attr("stroke-width", 3);
-    
+
     this.line = line;
-    
+
     this.pd = 1;
     this.angle = 0;
     this.queue = [];
-    
+
     var head = world.paper.circle(x, y+10, 5);
     head.attr("fill", color);
     head.attr("stroke", "black");
-    
+
     this.head = head;
-    
+
     this.getTable = function() {
 	return this.world.table;
     };
@@ -137,6 +146,63 @@ function Turtle(x, y, color, world) {
 		    });
 	    });
     };
+
+    this.moveToCell = function(x, y) {
+      var pos = {x: x, y: y};
+      var cell = getCell(this.getTable(), pos.y, pos.x);
+      if( cell.length == 0 ) { return;}
+      var to = cellPos(this.getTable(), pos.y, pos.x);
+      if( !this.world.canLandOn(cell, this) ) {
+	return;
+      };
+      this.pos = pos;
+      var turtle = this;
+      move(this, to.x, to.y, function() {
+	turtle.world.landOn(cell, turtle);
+      });
+    };
+
+    this.fwd = function() {
+      var x = this.pos.x + this.or.x;
+      var y = this.pos.y + this.or.y;
+      this.moveToCell(x, y);
+    };
+
+    this.back = function() {
+      var x = this.pos.x - this.or.x;
+      var y = this.pos.y - this.or.y;
+      this.moveToCell(x, y);
+    };
+
+    this.right = function() {
+      this.or.x *= -1;
+      this.or.y *= -1;
+      this.left();
+    };
+
+    this.left = function() {
+      if( this.or.x == 1 && this.or.y == 0 ) {
+	this.or.x = 0; this.or.y = -1;
+	fixHeadNoMove(this);
+	return;
+      };
+      if( this.or.x == 0 && this.or.y == -1 ) {
+	this.or.x = -1; this.or.y = 0;
+	fixHeadNoMove(this);
+	return;
+      };
+      if( this.or.x == -1 && this.or.y == 0 ) {
+	this.or.x = 0; this.or.y = 1;
+	fixHeadNoMove(this);
+	return;
+      };
+      if( this.or.x == 0 && this.or.y == 1 ) {
+	this.or.x = 1; this.or.y = 0;
+	fixHeadNoMove(this);
+	return;
+      };
+    };
+
 };
 
 processQueue = function(t) {
@@ -145,21 +211,21 @@ processQueue = function(t) {
     if( i == "" ) return;
     i = i.split(" ");
     var cmd = i.shift();
-    var processCmd = function(cmd) { 
+    var processCmd = function(cmd) {
 	switch(cmd) {
 
 	case "fwd":
-	fd(t); break;
+	t.fwd(); break;
 
 	case "back":
-	bk(t); break;
+	t.back(); break;
 
 	case "left":
-	lf(t); 
+	t.left();
 	break;
 
 	case "right":
-	rt(t); break;
+	t.right(); break;
 
 	case "pendown":
 	t.pd = 1; break;
@@ -210,34 +276,13 @@ tableturtle = function(world, col, row, color) {
 fixHead = function(x, y, t) {
     var head = t.head;
     var r = t.body.attr("r");
-    
+
     var newAttrs = {cx: x + ( t.or.x * r ),
 		    cy: y + ( t.or.y * r )};
     return newAttrs;
 };
 
-fd = function(t) {
-    var x = t.pos.x + t.or.x;
-    var y = t.pos.y + t.or.y;
-    moveToCell(t, x, y);
-};
-  
-moveToCell = function(t, x, y) {
-    var pos = {x: x, y: y};
-    var cell = getCell(t.getTable(), pos.y, pos.x);
-    if( cell.length == 0 ) { return;}
-    var to = cellPos(t.getTable(), pos.y, pos.x);
-    if( !accepts(cell, t) ) { return;}
-    t.pos = pos;
-    move(t, to.x, to.y, function() { actUpon(cell, t); });
-};
-
-accepts = function(cell, t) {
-    if( $(cell)[0].style.backgroundColor == "black" ) return 0;
-    return 1;
-};
-
-paint = function(t) { 
+paint = function(t) {
     var cell = getCell(t.getTable(), t.pos.y, t.pos.x);
     var c = t.body.attr("fill");
     $(cell).css("backgroundColor", c);
@@ -256,64 +301,32 @@ actUpon = function(cell, t) {
 	t.body.attr("cy", pos.y);
 	var headPos = fixHead(pos.x, pos.y, t);
 	t.head.attr({cx: headPos.cx, cy: headPos.cy});
-	
+
 	var line = t.world.paper.path("M" + pos.x + " " + pos.y);
 	line.attr("stroke", t.body.attr("fill"));
 	line.attr("stroke-width", 3);
 	t.line = line;
-	
+
 	return;
     };
-    //if( col != "white" ) {    
+    //if( col != "white" ) {
     //t.setColor(col);
     //};
 };
 
-bk = function(t) {
-    var x = t.pos.x - t.or.x;
-    var y = t.pos.y - t.or.y;
-    moveToCell(t, x, y);
-};
 
-rt = function(t) {
-    t.or.x *= -1;
-    t.or.y *= -1;
-    lf(t);  
-};
 
 fixHeadNoMove = function(t, noAnimate) {
     var headPos = fixHead(t.body.attr("cx"),
 			  t.body.attr("cy"),
-			  t); 
+			  t);
     if( noAnimate ) {
 	t.head.attr(headPos);
-    } else {		     
+    } else {
 	t.head.animate(headPos, 500);
     }
 };
 
-lf = function(t) {
-    if( t.or.x == 1 && t.or.y == 0 ) {
-	t.or.x = 0; t.or.y = -1;
-	fixHeadNoMove(t);
-	return;
-    };
-    if( t.or.x == 0 && t.or.y == -1 ) {
-	t.or.x = -1; t.or.y = 0;
-	fixHeadNoMove(t);
-	return;
-    };
-    if( t.or.x == -1 && t.or.y == 0 ) {
-	t.or.x = 0; t.or.y = 1;
-	fixHeadNoMove(t);
-	return;
-    };
-    if( t.or.x == 0 && t.or.y == 1 ) {
-	t.or.x = 1; t.or.y = 0;
-	fixHeadNoMove(t);
-	return;
-    };
-};
 
 fwd = function(turtle, l) {
     var angle = turtle.angle;
