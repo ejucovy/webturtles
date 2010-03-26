@@ -24,6 +24,7 @@
   };
 
 /*
+world.table -> html table reference
 world.paper -> Raphael canvas
 world.turtles -> [turtle, turtle]
  */
@@ -42,7 +43,7 @@ function World(tableSelector) {
     this.turtles = [];
 
     this.addTurtle = function(row, col, color) {
-	var t = tableturtle(this.table, row, col, color);
+	var t = tableturtle(this, row, col, color);
 	this.turtles.push(t);
     };
 
@@ -76,7 +77,9 @@ var processKey = function(event) {
   
 };
 
-function Turtle(x, y, color) {
+function Turtle(x, y, color, world) {
+  this.world = world;
+
   var seed = world.paper.circle(x, y, 10);
   seed.attr("fill", color);
   seed.attr("stroke", "black");
@@ -98,6 +101,10 @@ function Turtle(x, y, color) {
   head.attr("stroke", "black");
 
   this.head = head;
+
+  this.getTable = function() {
+      return this.world.table;
+  };
 };
 
 processQueue = function(t) {
@@ -126,7 +133,7 @@ processQueue = function(t) {
      case "paint":
       paint(t); break;
      case "move":
-      var pos = cellPos(t.table, i[0], i[1]);
+     var pos = cellPos(t.getTable(), i[0], i[1]);
       if( !pos ) return;
       t.pos.x = parseInt(i[1]);
       t.pos.y = parseInt(i[0]);
@@ -159,13 +166,14 @@ color = function(turtle, nc) {
   turtle.line = line;
 };
 
-tableturtle = function(table, col, row, color) {
-  var pos = cellPos(table, row, col);
-  var t = new Turtle(pos.x, pos.y, color);
-  t.pos = {x: col, y: row};
-  t.or = {x: 0, y: 1};
-  t.table = table;
-  return t;
+tableturtle = function(world, col, row, color) {
+    var table = world.table;
+    var pos = cellPos(table, row, col);
+    var t = new Turtle(pos.x, pos.y, color, world);
+    t.pos = {x: col, y: row};
+    t.or = {x: 0, y: 1};
+    t.world = world;
+    return t;
 };
 
 fixHead = function(x, y, t) {
@@ -181,9 +189,9 @@ fd = function(t) {
   var pos = {};
   pos.x = t.pos.x + t.or.x;
   pos.y = t.pos.y + t.or.y;
-  var cell = getCell(t.table, pos.y, pos.x);
+  var cell = getCell(t.getTable(), pos.y, pos.x);
   if( cell.length == 0 ) { return;}
-  var to = cellPos(t.table, pos.y, pos.x);
+  var to = cellPos(t.getTable(), pos.y, pos.x);
   if( !accepts(cell, t) ) { return;}
   t.pos = pos;
   move(t, to.x, to.y, function() { actUpon(cell, t); });
@@ -195,7 +203,7 @@ accepts = function(cell, t) {
 };
 
 paint = function(t) { 
-  var cell = getCell(t.table, t.pos.y, t.pos.x);
+    var cell = getCell(t.getTable(), t.pos.y, t.pos.x);
   var c = t.body.attr("fill");
   $(cell).css("backgroundColor", c);
   actUpon(cell, t);
@@ -208,7 +216,7 @@ actUpon = function(cell, t) {
     pos = pos.split("-");
     pos = {x: parseInt(pos[1]), y: parseInt(pos[0])};
     t.pos = pos;
-    pos = cellPos(t.table, pos.y, pos.x);
+    pos = cellPos(t.getTable(), pos.y, pos.x);
     t.body.attr("cx", pos.x);
     t.body.attr("cy", pos.y);
     var headPos = fixHead(pos.x, pos.y, t);
