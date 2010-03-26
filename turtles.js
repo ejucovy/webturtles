@@ -53,6 +53,14 @@ function World(tableSelector) {
 	};
     };
     this.run = function() { run(this) };
+
+    this.numRows = function() {
+	return $(this.table).find("tr").length;
+    };
+    
+    this.numCols = function() {
+	return $(this.table).find("td").length / this.numRows();
+    };
 };
 
 var run = function(world) {
@@ -188,6 +196,14 @@ tableturtle = function(world, col, row, color) {
     t.pos = {x: col, y: row};
     t.or = {x: 0, y: 1};
     t.world = world;
+
+    t.setOrientation = function(x, y) {
+	t.or.x = x; t.or.y = y;
+	t.head.attr(fixHead(t.body.attr("cx"),
+			    t.body.attr("cy"),
+			    t));
+    };
+
     return t;
 };
 
@@ -328,16 +344,8 @@ move = function(turtle, x, y, callback) {
     }
 };
 
-rows = function(table) {
-    return $("#grid table tr").length;
-};
-
-cols = function(table) {
-    return $("#grid table td").length / rows(table);
-};
-
 getCell = function(table, row, col) {
-    row = $($("#grid table tr")[row]);  
+    row = $($(table).find("tr")[row]);
     return $($(row).children("td")[col]);
 };
 
