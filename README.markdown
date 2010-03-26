@@ -2,6 +2,8 @@
 
 Logo-style turtles in Javascript that live on the web.
 
+It uses jQuery and Raphael.js -- thanks!
+
 See simple.html for basic usage.
 
 ## Basic concepts
