@@ -120,6 +120,15 @@ function Turtle(x, y, color, world) {
 	this.line = line;
     };
 
+    this.fetch = function(url) {
+	var turtle = this;
+	$.get(url, function(doc) {
+		doc = doc.split("\n");
+		$(doc).each(function() {
+			turtle.queue.push(this);
+		    });
+	    });
+    };
 };
 
 processQueue = function(t) {
@@ -151,7 +160,7 @@ processQueue = function(t) {
 	t.pd = 0; break;
 
 	case "fetch":
-	fetch(t, i[0]); break;
+	t.fetch(i[0]); break;
 
 	case "paint":
 	paint(t); break;
@@ -170,15 +179,6 @@ processQueue = function(t) {
 	};
     };
     processCmd(cmd);
-};
-
-fetch = function(t, url) {
-    $.get(url, function(doc) {
-	    doc = doc.split("\n");
-	    $(doc).each(function() {
-		    t.queue.push(this);
-		});
-	});
 };
 
 tableturtle = function(world, col, row, color) {
