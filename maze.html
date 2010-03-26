@@ -54,7 +54,18 @@ $(window).load(function() {
   form[0].style.top = 0;
   form[0].style.left = $(window).width() - form.width();
 
-  $(document).keypress(processKey);
+  $(document).keypress(function(event) {
+	var turtle = world.turtles[3];
+	var keymap = {
+		97: "left",
+		115: "fwd",
+		100: "right",
+		119: "back",
+		};
+	var cmd = keymap[event.which];
+	if( !cmd ) return;
+	turtle.queue.push(cmd);
+  });
 });
 			</script>
   </head>

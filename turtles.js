@@ -78,22 +78,6 @@ var run = function(world) {
 		      750);
 };
 
-var processKey = function(event) {
-    if( event.which == 97 ) {
-      world.turtles[3].left();
-    };
-    if( event.which == 115 ) {
-      world.turtles[3].fwd();
-    };
-    if( event.which == 100 ) {
-      world.turtles[3].right();
-    };
-    if( event.which == 119 ) {
-      world.turtles[3].back();
-    };
-
-};
-
 function Turtle(x, y, color, world) {
     this.world = world;
 
@@ -202,7 +186,6 @@ function Turtle(x, y, color, world) {
 	return;
       };
     };
-
 };
 
 processQueue = function(t) {
