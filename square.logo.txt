@@ -1,0 +1,17 @@
+fwd
+fwd
+left
+fwd
+fwd
+fwd
+left
+fwd
+left
+fwd
+left
+fwd
+right
+fwd
+right
+fetch http://turtles.zebra-associates.org/square.logo.txt
+
