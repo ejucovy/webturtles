@@ -245,7 +245,7 @@ paint = function(t) {
 };
 
 actUpon = function(cell, t) {
-    var col = $(cell)[0].style.backgroundColor;
+    var col = $(cell).css("backgroundColor");
     if( $(cell).attr("class") != "" ) {
 	var pos = $(cell).attr("class");
 	pos = pos.split("-");
@@ -264,9 +264,9 @@ actUpon = function(cell, t) {
 	
 	return;
     };
-    if( col != "white" ) {    
-	t.setColor(col);
-    };
+    //if( col != "white" ) {    
+    //t.setColor(col);
+    //};
 };
 
 bk = function(t) {
