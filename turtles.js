@@ -201,9 +201,13 @@ fixHead = function(x, y, t) {
 };
 
 fd = function(t) {
-    var pos = {};
-    pos.x = t.pos.x + t.or.x;
-    pos.y = t.pos.y + t.or.y;
+    var x = t.pos.x + t.or.x;
+    var y = t.pos.y + t.or.y;
+    moveToCell(t, x, y);
+};
+  
+moveToCell = function(t, x, y) {
+    var pos = {x: x, y: y};
     var cell = getCell(t.getTable(), pos.y, pos.x);
     if( cell.length == 0 ) { return;}
     var to = cellPos(t.getTable(), pos.y, pos.x);
@@ -250,9 +254,9 @@ actUpon = function(cell, t) {
 };
 
 bk = function(t) {
-    t.or.x *= -1;
-    t.or.y *= -1;
-    fixHeadNoMove(t);
+    var x = t.pos.x - t.or.x;
+    var y = t.pos.y - t.or.y;
+    moveToCell(t, x, y);
 };
 
 rt = function(t) {

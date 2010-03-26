@@ -44,8 +44,10 @@ $(window).load(function() {
   world.addTurtle(cols(table)-1, rows(table)-1, "purple");
   world.addTurtle(cols(table)-1, 0, "orange");
   world.addTurtle(0, rows(table)-1, "blue");
+
   world.turtles[1].or.y = -1;
   world.turtles[3].or.y = -1;
+
   $(world.turtles).each(function() { 
     this.head.attr(fixHead(this.body.attr("cx"), this.body.attr("cy"), this));
   });
