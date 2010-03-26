@@ -112,6 +112,8 @@ function Turtle(x, y, color, world) {
 	var x = this.body.attr("cx");
 	var y = this.body.attr("cy");
 
+	this.head.attr("fill", newColor);
+
 	var line = this.world.paper.path("M" + x + " " + y);
 	line.attr("stroke", newColor);
 	line.attr("stroke-width", 3);
