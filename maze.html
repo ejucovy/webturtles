@@ -56,6 +56,7 @@ $(window).load(function() {
 
   $(document).keypress(function(event) {
 	var turtle = world.turtles[3];
+	if( turtle.busy ) return;
 	var keymap = {
 		97: "left",
 		115: "fwd",
@@ -64,7 +65,10 @@ $(window).load(function() {
 		};
 	var cmd = keymap[event.which];
 	if( !cmd ) return;
+	console.log(turtle.queue.length + " " + cmd);
 	turtle.queue.push(cmd);
+	turtle.busy = 1;
+	world.step();
   });
 });
 			</script>

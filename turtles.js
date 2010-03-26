@@ -80,6 +80,7 @@ var run = function(world) {
 
 function Turtle(x, y, color, world) {
     this.world = world;
+    this.busy = 0;
 
     var seed = world.paper.circle(x, y, 10);
     seed.attr("fill", color);
@@ -304,9 +305,9 @@ fixHeadNoMove = function(t, noAnimate) {
 			  t.body.attr("cy"),
 			  t);
     if( noAnimate ) {
-	t.head.attr(headPos);
+      t.head.attr(headPos);
     } else {
-	t.head.animate(headPos, 500);
+      t.head.animate(headPos, 500, function() { t.busy=0; });
     }
 };
 
@@ -324,7 +325,8 @@ fwd = function(turtle, l) {
 move = function(turtle, x, y, callback) {
     callback = callback || function() { return; };
     var _callback = function() {
-	callback();
+      turtle.busy = 0;
+      callback();
     };
     var line = turtle.line;
     var path = line.attr("path");
