@@ -1,0 +1,95 @@
+<html>
+  <head>
+    
+    <script src="/lib/raphael.js" type="text/javascript"></script>
+    <script src="/lib/jquery.js" type="text/javascript"></script>
+    <script src="/lib/turtles.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+actUpon = function(cell, t) {
+  if( $(cell).hasClass("end") ) {
+    $("div#welcome").html("Congratulations!<br/><br/>When you feel like leaving this page, you can <a href='/tutorial/paint.html'>learn about painting!</a>");
+  };
+};
+
+$(window).load(function() {
+  var table = hbmpize($("pre.hbmp")[0]);
+  var world = new World(table);
+  world.landOn = actUpon;
+
+  $("button").click(function() {
+    var cmd = $(this).attr("value");
+    var turtle = 1;
+    var queue = $("textarea[name="+turtle+"]");
+    queue.val(queue.val() + cmd + "\n");
+    return false;
+  });
+
+  $("button#queue").click(function() {
+    for( var i = 0; i < world.turtles.length; ++i ) {
+      var turtle = world.turtles[i];
+      var x = i+1;
+      var cmds = $("textarea[name="+x+"]").val();
+      $("textarea[name="+x+"]").val("");
+      cmds = cmds.split("\n");
+      $(cmds).each(function() {
+        if( this == "" ) return;
+        turtle.queue.push(this);
+      });
+    };
+  });
+
+  world.run();
+
+  world.addTurtle(0, 0, "green");
+  world.turtles[0].pd = 0;
+  $(world.turtles).each(function() { 
+    this.head.attr(fixHead(this.body.attr("cx"), 
+			   this.body.attr("cy"), this));
+  });
+
+});
+			</script>
+  </head>
+  <body style="background-color: black">
+
+    <div id="grid">
+
+<pre class="hbmp">
+white,white,white,white
+white,white,black,white
+white,black,white,white
+black,white,white,green end
+</pre>
+
+</div>
+
+
+<div id="welcome" style="background-color: #eee; font-size: 2em; float: left; width: 48%; font-family: monospace;">
+The turtle can't walk across black squares.
+<br/><br/>
+Can you get him to the green square?
+</div>
+
+    <form id="cpanel" style="float: right; width: 48%;">
+      <div style="color: white;">
+	<button value="fwd">Forward</button>
+	<button value="back">Back</button>
+	<button value="left">Left</button>
+	<button value="right">Right</button>
+      </div>
+
+      <br/>
+      <div style="color:black">
+	<textarea rows="15" name="1"></textarea>
+      </div>
+      <br/>
+      
+      <button id="queue">Issue instructions</button>
+      <br/>
+
+    </form>
+    
+  </body>
+  
+</html>

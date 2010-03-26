@@ -1,0 +1,113 @@
+<html>
+  <head>
+    
+    <script src="/lib/raphael.js" type="text/javascript"></script>
+    <script src="/lib/jquery.js" type="text/javascript"></script>
+    <script src="/lib/turtles.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+actUpon = function(cell, t) {
+  var turtles = t.world.turtles;
+  if( (turtles[0].pos.x == turtles[1].pos.x) &&
+      (turtles[0].pos.y == turtles[1].pos.y) ) {
+    if( $(cell).hasClass("end") ) {
+      $("div#welcome").html("Good work!<br/><br/>I think they like each other! <a href='/squaredance.html'>Phew -- you deserve a break!</a>");
+    };
+  };
+};
+
+$(window).load(function() {
+  var table = hbmpize($("pre.hbmp")[0]);
+  var world = new World(table);
+  world.landOn = actUpon;
+
+  $("button").click(function() {
+    var cmd = $(this).attr("value");
+    var turtle = $("input[name=turtle]:checked").val();
+    var queue = $("textarea[name="+turtle+"]");
+    queue.val(queue.val() + cmd + "\n");
+    return false;
+  });
+
+  $("button#queue").click(function() {
+    for( var i = 0; i < world.turtles.length; ++i ) {
+      var turtle = world.turtles[i];
+      var x = i+1;
+      var cmds = $("textarea[name="+x+"]").val();
+      $("textarea[name="+x+"]").val("");
+      cmds = cmds.split("\n");
+      $(cmds).each(function() {
+        if( this == "" ) return;
+        turtle.queue.push(this);
+      });
+    };
+  });
+
+  world.run();
+
+  world.addTurtle(0, 0, "green");
+  world.addTurtle(3, 3, "blue");
+  $(world.turtles).each(function() { 
+    this.pd = 0;
+    this.head.attr(fixHead(this.body.attr("cx"),
+			   this.body.attr("cy"), this));
+  });
+
+});
+			</script>
+  </head>
+  <body style="background-color: black">
+
+    <div id="grid">
+
+<pre class="hbmp">
+white,white,white,white
+white,white,white,white
+white,yellow end,white,white
+white,white,white,white
+</pre>
+
+</div>
+
+
+<div id="welcome" style="background-color: #eee; font-size: 2em; float: left; width: 48%; font-family: monospace;">
+On this level you have two turtles you can control.  The new guy is blue, do you see him?
+<br/><br/>
+They should get to know each other. 
+<br/><br/>
+Why don't you bring both of them over to the yellow square?
+<br/><br/>
+To send instructions to the blue turtle, set the blue turtle's radio button before clicking on the command buttons.
+</div>
+
+    <form id="cpanel" style="float: right; width: 48%;">
+      <div style="color: white;">
+
+	<div>
+	  <input type="radio" name="turtle" value="1" checked=""/>green
+	  <br/>
+	  <input type="radio" name="turtle" value="2"/>blue
+	</div>
+
+	<button value="fwd">Forward</button>
+	<button value="back">Back</button>
+	<button value="left">Left</button>
+	<button value="right">Right</button>
+	<button value="paint">Paint</button>
+      </div>
+
+      <br/>
+      <div style="color:black">
+	<textarea rows="15" name="1"></textarea>
+	<textarea rows="15" name="2"></textarea>
+      </div>
+      <br/>
+      
+      <button id="queue">Issue instructions</button>
+      <br/>
+
+    </form>
+    
+  </body>
+  
+</html>

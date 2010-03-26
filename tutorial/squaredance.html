@@ -1,0 +1,68 @@
+<html>
+  <head>
+    
+    <script src="/lib/raphael.js" type="text/javascript"></script>
+    <script src="/lib/jquery.js" type="text/javascript"></script>
+    <script src="/lib/turtles.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+actUpon = function(cell, t) {
+  return;
+};
+
+$(window).load(function() {
+  var table = hbmpize($("pre.hbmp")[0]);
+  var world = new World(table);
+  world.landOn = actUpon;
+
+  $("button#queue").click(function() {
+    for( var i = 0; i < world.turtles.length; ++i ) {
+      var turtle = world.turtles[i];
+      var x = i+1;
+      var cmds = $("textarea[name="+x+"]").val();
+      $("textarea[name="+x+"]").val("");
+      cmds = cmds.split("\n");
+      $(cmds).each(function() {
+        if( this == "" ) return;
+        world.turtle.queue.push(this);
+      });
+    };
+  });
+
+  world.run();
+
+  world.addTurtle(0, 0, "green");
+  world.addTurtle(3, 3, "blue");
+  world.turtles[1].or.y = -1;
+  $(world.turtles).each(function() { 
+    this.pd = 0;
+    this.head.attr(fixHead(this.body.attr("cx"), 
+			   this.body.attr("cy"), this));
+    this.queue = ["fetch /square.logo.txt"];
+  });
+
+});
+			</script>
+  </head>
+  <body style="background-color: black">
+
+    <div id="grid">
+
+<pre class="hbmp">
+yellow,purple,yellow,purple
+purple,yellow,purple,yellow
+yellow,purple,yellow,purple
+purple,yellow,purple,yellow
+</pre>
+
+</div>
+
+
+<div id="welcome" style="background-color: #eee; font-size: 2em; float: left; width: 48%; font-family: monospace;">
+It's a dance!
+</div>
+
+    
+  </body>
+  
+</html>
