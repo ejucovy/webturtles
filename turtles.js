@@ -157,10 +157,9 @@ fetch = function(t, url) {
 
 color = function(turtle, nc) {
     turtle.body.attr("fill", nc);
-    //turtle.attr("stroke", nc);
     var x = turtle.body.attr("cx");
     var y = turtle.body.attr("cy");
-    var line = world.paper.path("M" + x + " " + y);
+    var line = turtle.world.paper.path("M" + x + " " + y);
     line.attr("stroke", nc);
     line.attr("stroke-width", 3);
     turtle.line = line;
@@ -222,7 +221,7 @@ actUpon = function(cell, t) {
 	var headPos = fixHead(pos.x, pos.y, t);
 	t.head.attr({cx: headPos.cx, cy: headPos.cy});
 	
-	var line = world.paper.path("M" + pos.x + " " + pos.y);
+	var line = t.world.paper.path("M" + pos.x + " " + pos.y);
 	line.attr("stroke", t.body.attr("fill"));
 	line.attr("stroke-width", 3);
 	t.line = line;
@@ -331,8 +330,8 @@ cellPos = function(table, row, col) {
 getCellPos = function(cell) {
     cell = $(cell);
     var pos = cell.position();
-    var h = cell.height(),
-    w = cell.width();
+    var h = cell.height();
+    var w = cell.width();
     var x = pos.left + w/2;
     var y = pos.top + h/2;
     return {x: x, y: y};
