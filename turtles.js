@@ -105,6 +105,19 @@ function Turtle(x, y, color, world) {
     this.getTable = function() {
 	return this.world.table;
     };
+
+    this.setColor = function(newColor) {
+	this.body.attr("fill", newColor);
+
+	var x = this.body.attr("cx");
+	var y = this.body.attr("cy");
+
+	var line = this.world.paper.path("M" + x + " " + y);
+	line.attr("stroke", newColor);
+	line.attr("stroke-width", 3);
+	this.line = line;
+    };
+
 };
 
 processQueue = function(t) {
@@ -115,23 +128,32 @@ processQueue = function(t) {
     var cmd = i.shift();
     var processCmd = function(cmd) { 
 	switch(cmd) {
+
 	case "fwd":
 	fd(t); break;
+
 	case "back":
 	bk(t); break;
+
 	case "left":
 	lf(t); 
 	break;
+
 	case "right":
 	rt(t); break;
+
 	case "pendown":
 	t.pd = 1; break;
+
 	case "penup":
 	t.pd = 0; break;
+
 	case "fetch":
 	fetch(t, i[0]); break;
+
 	case "paint":
 	paint(t); break;
+
 	case "move":
 	var pos = cellPos(t.getTable(), i[0], i[1]);
 	if( !pos ) return;
@@ -139,8 +161,10 @@ processQueue = function(t) {
 	t.pos.y = parseInt(i[0]);
 	move(t, pos.x, pos.y);
 	break;
+
 	case "color":
-	color(t, i[0]); break;
+	t.setColor(i[0]);
+	break;
 	};
     };
     processCmd(cmd);
@@ -153,16 +177,6 @@ fetch = function(t, url) {
 		    t.queue.push(this);
 		});
 	});
-};
-
-color = function(turtle, nc) {
-    turtle.body.attr("fill", nc);
-    var x = turtle.body.attr("cx");
-    var y = turtle.body.attr("cy");
-    var line = turtle.world.paper.path("M" + x + " " + y);
-    line.attr("stroke", nc);
-    line.attr("stroke-width", 3);
-    turtle.line = line;
 };
 
 tableturtle = function(world, col, row, color) {
@@ -229,7 +243,7 @@ actUpon = function(cell, t) {
 	return;
     };
     if( col != "white" ) {    
-	color(t, col);
+	t.setColor(col);
     };
 };
 
