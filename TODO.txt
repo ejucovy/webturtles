@@ -16,17 +16,19 @@ The turtles should use more HTML and less Javascript. It seems like this works:
 So can all these relations be read and written in the page itself?
 
 <svg>
-<a name="turtle0" id="turtle0" rel="commandQueue" href="turtle0-cmds">
-<circle cx="236.75" cy="380.5" r="10" fill="#c43651" stroke="#000000"/>
-<circle cx="226.75" cy="380.5" r="5" fill="#c43651" stroke="#000000"/>
-</a>
-<a rel="originatingTurtle" href="#turtle0">
-<path d="M0 0L100 100">
-</a>
+  <a name="turtle0" id="turtle0" rel="commandQueue" href="turtle0-cmds">
+    <circle cx="236.75" cy="380.5" r="10" fill="#c43651" stroke="#000000"/>
+    <circle cx="226.75" cy="380.5" r="5" fill="#c43651" stroke="#000000"/>
+  </a>
+
+  <a rel="originatingTurtle" href="#turtle0">
+    <path d="M0 0L100 100">
+  </a>
 </svg>
-<pre class="turtleCommands" id="turtle0-cmds">
-fwd
-fwd
-left
-back
-</pre>
+
+<ol class="turtleCommands" id="turtle0-cmds">
+  <li>fwd</li>
+  <li>fwd</li>
+  <li>left</li>
+  <li>back</li>
+</ol>
