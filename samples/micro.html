@@ -1,0 +1,77 @@
+<html><head>
+    <script src="../lib/loader.js" type="text/javascript"></script>
+    <style type="text/css">
+      table {
+        border: 1px solid black; border-collapse: collapse; display: table;
+      }
+      td {
+        border: none;
+      }
+      ol {
+        display: none;
+      }
+    </style>
+  </head><body>
+
+      <table id="grid" style="width: 750px;
+			      height: 400px;">
+      </table>
+
+      <h1>Click to place some random turtles</h1>
+
+    <script type="text/javascript">
+
+      var world;
+ 
+      var possibleCmds = ["fwd", "left", "right", "back", "paint"];
+
+      var installCommands = function(turtle) {
+        var numCmds = Math.floor(Math.random()*20);
+        for( var i = 0; i < numCmds; ++i ) {
+	  var cmdIndex = Math.floor(Math.random() * possibleCmds.length);
+	  turtle.pushQueue(possibleCmds[cmdIndex]);	    
+	};
+      };
+
+      $(window).click(function(e) {
+        var cell = findCellForPos(world.table, e.clientX, e.clientY);
+        var pos = findCellCoordinates(cell);
+
+        var rand = function() { return Math.floor(Math.random()*255); };
+        var rgb = "rgb(" + rand() + "," + rand() + "," + rand() + ")";
+
+        world.addTurtle(pos.col, pos.row, rgb);
+        var thatNewTurtle = world.turtles[world.turtles.length-1];
+        thatNewTurtle.setOrientation(0, -1);
+        thatNewTurtle.pushQueue("fwd");
+        installCommands(thatNewTurtle);
+
+      });
+
+      window.onload = function() {
+       var table = $("table#grid");
+       for( var i = 0; i < 50; ++i ) {
+         var tr = $("<tr/>");
+         for( var j = 0; j < 50; ++j ) {
+           $("<td/>").appendTo(tr);
+         };
+         tr.appendTo(table);
+       };
+       world = new World("table#grid");
+
+       step = function(world) {
+         world.step();
+         for( var i = 0; i < world.turtles.length; ++i ) {
+           var turtle = world.turtles[i];
+           if( turtle.getQueue().length == 0 ) {
+             installCommands(turtle);
+           };
+         };
+         window.setTimeout(function() { step(world) },
+		      750);
+       };
+
+       step(world);
+      };
+      </script>
+     </body></html>
