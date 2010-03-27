@@ -46,12 +46,11 @@
         var thatNewTurtle = world.turtles[world.turtles.length-1];
         thatNewTurtle.setOrientation(0, -1);
         var numCmds = Math.floor(Math.random()*20);
-        var queue = ["fwd"];
+        thatNewTurtle.pushQueue("fwd");
         for( var i = 0; i < numCmds; ++i ) {
 	  var cmdIndex = Math.floor(Math.random() * possibleCmds.length);
-	  queue.push(possibleCmds[cmdIndex]);	    
+	  thatNewTurtle.pushQueue(possibleCmds[cmdIndex]);	    
 	};
-        thatNewTurtle.queue = queue;
         seed.remove();
       };
 
