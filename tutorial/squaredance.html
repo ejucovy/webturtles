@@ -1,13 +1,18 @@
 <html>
   <head>
     
-    <script src="/lib/raphael.js" type="text/javascript"></script>
-    <script src="/lib/jquery.js" type="text/javascript"></script>
-    <script src="/lib/turtles.js" type="text/javascript"></script>
+    <script src="../lib/raphael.js" type="text/javascript"></script>
+    <script src="../lib/jquery.js" type="text/javascript"></script>
+    <script src="../lib/turtles.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-actUpon = function(cell, t) {
-  return;
+actUpon = function(cell,t) {
+  var queueTxt = $("#" + t.name);
+  queueTxt.html("");
+  $(t.queue).each(function() {
+    queueTxt.append("<option>" + this + "</option>");
+  });
+  queueTxt.children("option:first").attr("selected", "1");
 };
 
 $(window).load(function() {
@@ -33,12 +38,15 @@ $(window).load(function() {
 
   world.addTurtle(0, 0, "green");
   world.addTurtle(3, 3, "blue");
+  world.turtles[0].name = "green";
+  world.turtles[1].name = "blue";
+
   world.turtles[1].or.y = -1;
   $(world.turtles).each(function() { 
     this.pd = 0;
     this.head.attr(fixHead(this.body.attr("cx"), 
 			   this.body.attr("cy"), this));
-    this.queue = ["fetch /square.logo.txt"];
+    this.queue = ["fetch ../square.logo.txt"];
   });
 
 });
@@ -58,11 +66,15 @@ purple,yellow,purple,yellow
 </div>
 
 
-<div id="welcome" style="background-color: #eee; font-size: 2em; float: left; width: 48%; font-family: monospace;">
-It's a dance!
-</div>
-
+    <div id="welcome" style="background-color: #eee; font-size: 2em; float: left; width: 48%; font-family: monospace;">
+      It's a dance!
+    </div>
     
+    
+    <div style="float: right; width: 48%">
+      <select disabled="1" multiple="1" id="green"></select>
+      <select disabled="1" multiple id="blue"></select>
+    </div>
   </body>
   
 </html>

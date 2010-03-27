@@ -13,5 +13,5 @@ fwd
 right
 fwd
 right
-fetch http://turtles.zebra-associates.org/square.logo.txt
+fetch ../square.logo.txt
 
