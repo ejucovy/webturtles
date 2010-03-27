@@ -66,6 +66,8 @@
 
 
       window.onload = function() {
+	$('#colorpicker').farbtastic('#color');
+
        var table = $("table#grid");
        for( var i = 0; i < 75; ++i ) {
          var tr = $("<tr/>");
@@ -89,8 +91,6 @@
        };
 
        step(world);
-
-	$('#colorpicker').farbtastic('#color');
       };
 
       </script>
