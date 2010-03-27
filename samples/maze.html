@@ -26,7 +26,7 @@ $(window).load(function() {
       cmds = cmds.split("\n");
       $(cmds).each(function() {
         if( this == "" ) return;
-        turtle.queue.push(this);
+        turtle.pushQueue(this);
       });
     };
   });
@@ -62,8 +62,8 @@ $(window).load(function() {
 		};
 	var cmd = keymap[event.which];
 	if( !cmd ) return;
-	console.log(turtle.queue.length + " " + cmd);
-	turtle.queue.push(cmd);
+	console.log(turtle.getQueue().length + " " + cmd);
+	turtle.pushQueue(cmd);
 	turtle.busy = 1;
 	world.step();
   });
