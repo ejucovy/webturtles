@@ -30,7 +30,7 @@ $(window).load(function() {
       cmds = cmds.split("\n");
       $(cmds).each(function() {
         if( this == "" ) return;
-        turtle.queue.push(this);
+        turtle.pushQueue(this);
       });
     };
   });

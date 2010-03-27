@@ -27,7 +27,7 @@ $(window).load(function() {
       cmds = cmds.split("\n");
       $(cmds).each(function() {
         if( this == "" ) return;
-        world.turtle.queue.push(this);
+        turtle.pushQueue(this);
       });
     };
   });
@@ -45,7 +45,7 @@ $(window).load(function() {
     this.head.attr(fixHead(this.body.attr("cx"), 
 			   this.body.attr("cy"), this));
 
-    this.queue = ["fetch ../square.logo.txt"];
+    this.pushQueue("fetch ./square.logo.txt");
   });
 
 });
