@@ -41,7 +41,7 @@ $(window).load(function() {
   world.addTurtle(world.numCols()-1,
 		  world.numRows()-1, "purple");
   world.addTurtle(world.numCols()-1, 0, "orange");
-  world.addTurtle(0, world.numRows()-1, "blue");
+  world.addTurtle(6, world.numRows()-3, "blue");
 
   world.turtles[1].setOrientation(0, -1);
   world.turtles[3].setOrientation(0, -1);
@@ -62,7 +62,6 @@ $(window).load(function() {
 		};
 	var cmd = keymap[event.which];
 	if( !cmd ) return;
-	console.log(turtle.getQueue().length + " " + cmd);
 	turtle.pushQueue(cmd);
 	turtle.busy = 1;
 	world.step();
