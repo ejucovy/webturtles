@@ -1,7 +1,10 @@
      <html><head>
-     <script type="text/javascript" src="lib/jquery.js"></script>
-     <script type="text/javascript" src="lib/raphael.js"></script>
-     <script type="text/javascript" src="lib/turtles.js"></script>
+     <script type="text/javascript" src="./lib/jquery.js"></script>
+     <script type="text/javascript" src="./lib/raphael.js"></script>
+     <script type="text/javascript" src="./lib/Utility.js"></script>
+     <script type="text/javascript" src="./lib/Turtle.js"></script>
+     <script type="text/javascript" src="./lib/World.js"></script>
+
 
      </head><body>
       <table id="grid" style="width: 500px;
@@ -22,19 +25,22 @@
 	 	       "#d05");
 
        var green = world.turtles[0];
-       green.queue.push("fwd");
-       green.queue.push("fwd");
-       green.queue.push("penup");
-       green.queue.push("fwd");
+       green.pushQueue("fwd");
+       green.pushQueue("fwd");
+       green.pushQueue("penup");
+       green.pushQueue("fwd");
 
        var blue = world.turtles[1];
        blue.setOrientation(0,-1);
-       blue.queue = ["left", "fwd", "right", "fwd"];
-       blue.queue.push("paint");
-       blue.queue.push("color red");
-       blue.queue.push("fwd");
-       blue.queue.push("paint");
-       blue.queue.push("back");
+       blue.pushQueue("left");
+       blue.pushQueue("fwd");
+       blue.pushQueue("right");
+       blue.pushQueue("fwd");
+       blue.pushQueue("paint");
+       blue.pushQueue("color red");
+       blue.pushQueue("fwd");
+       blue.pushQueue("paint");
+       blue.pushQueue("back");
 
        world.run();
       };
