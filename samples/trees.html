@@ -103,7 +103,6 @@
         var rgb = "rgb(" + rand() + "," + rand() + "," + rand() + ")";
         c.attr("fill", rgb);
         c.animate({cy: world.paper.height}, 1000, function() { whenSeedLands(c) });
-        console.log(c);
       });
 
       window.onload = function() {
