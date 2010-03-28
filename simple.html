@@ -16,8 +16,9 @@
       </table>
 
       <script type="text/javascript">
+	var world;
       window.onload = function() {
-       var world = new World("table#grid")
+       world = new World("table#grid")
 
        world.addTurtle(0, 0, "green");
        world.addTurtle(world.numCols()-1, 
