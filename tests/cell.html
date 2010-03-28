@@ -1,0 +1,41 @@
+<html><head>
+    <script src="../lib/loader.js" type="text/javascript"></script>
+    <style type="text/css">
+      table {
+        border: 1px solid black; border-collapse: collapse; display: table;
+      }
+      td {
+        border: 1px solid black;
+      }
+    </style>
+  </head><body>
+
+      <table id="grid" style="width: 750px;
+			      height: 400px;">
+      </table>
+
+      <h1>Click to place some random turtles</h1>
+
+    <script type="text/javascript">
+
+      var table;
+
+      $(window).click(function(e) {
+        console.log(e.clientX, e.clientY);
+        var cell = findCellForPos(table, e.clientX, e.clientY);
+        $(cell).css("backgroundColor", "red");
+      });
+
+      window.onload = function() {
+       table = $("table#grid");
+       for( var i = 0; i < 50; ++i ) {
+         var tr = $("<tr/>");
+         for( var j = 0; j < 50; ++j ) {
+           $("<td/>").appendTo(tr);
+         };
+         tr.appendTo(table);
+       };
+
+      };
+      </script>
+     </body></html>
