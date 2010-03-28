@@ -13,5 +13,5 @@ fwd
 right
 fwd
 right
-fetch ../square.logo.txt
+fetch ./square.logo.txt
 
