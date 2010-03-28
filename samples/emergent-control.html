@@ -22,27 +22,30 @@
 			      height: 400px;">
       </table>
 
-      <h1>Click to place some random turtles</h1>
+      <h5>Click to place some random turtles</h5>
 
-      Cloneyness <input id="heat" value="1" />
-      <br />
-      Paintyness <input id="paintiness" value="1" />
-      <br />
-      Moveyness <input id="grav0" value="1" />
-       * Forwardiness <input id="grav1" value="0.5" />
-      <br />
-      Turnyness <input id="wind0" value="1" />
-       * Leftyness <input id="wind1" value="0.5" />
+      <div style="float: right">
+	Cloneyness <input id="heat" value="1" />
+	<br />
+	Paintyness <input id="paintiness" value="1" />
+	<br />
+	Moveyness <input id="grav0" value="1" />
+	* Forwardiness <input id="grav1" value="0.5" />
+	<br />
+	Turnyness <input id="wind0" value="1" />
+	* Leftyness <input id="wind1" value="0.5" />
+      </div>
 
-      <div id="color-sample">
-	<form>
-	  <input type="text" id="color" name="color" value="#123456" />
-	</form>
+      <div id="color-sample" style="float: left">
 	<div id="colorpicker"></div>
       </div>
 
-      <button onclick="$('circle').toggle(); return false;">Show/hide turtles</button>
+	<form>
+	  <input type="text" id="color" name="color" value="#123456" />
+	</form>
 
+      <br/>
+      <em>The turtles will choose from these commands:</em>
       <pre id="cmds">
       </pre>
       
