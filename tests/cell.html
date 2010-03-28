@@ -23,6 +23,7 @@
       $(window).click(function(e) {
         console.log(e.clientX, e.clientY);
         var cell = findCellForPos(table, e.clientX, e.clientY);
+        $("td").css("backgroundColor", "");
         $(cell).css("backgroundColor", "red");
       });
 
