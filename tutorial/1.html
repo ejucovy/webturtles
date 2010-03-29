@@ -41,10 +41,6 @@ $(window).load(function() {
 
   world.addTurtle(0, 0, "green");
   world.turtles[0].pd = 0;
-  $(world.turtles).each(function() { 
-    this.head.attr(fixHead(this.body.attr("cx"),
-			   this.body.attr("cy"), this));
-  });
 
 });
 			</script>

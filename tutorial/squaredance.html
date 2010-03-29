@@ -39,12 +39,9 @@ $(window).load(function() {
   world.turtles[0].name = "green";
   world.turtles[1].name = "blue";
 
-  world.turtles[1].or.y = -1;
+  world.turtles[1].setOrientation(0, -1);
   $(world.turtles).each(function() { 
     this.pd = 0;
-    this.head.attr(fixHead(this.body.attr("cx"), 
-			   this.body.attr("cy"), this));
-
     this.pushQueue("fetch ./square.logo.txt");
   });
 

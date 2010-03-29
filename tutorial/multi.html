@@ -47,8 +47,6 @@ $(window).load(function() {
   world.addTurtle(3, 3, "blue");
   $(world.turtles).each(function() { 
     this.pd = 0;
-    this.head.attr(fixHead(this.body.attr("cx"),
-			   this.body.attr("cy"), this));
   });
 
 });
