@@ -63,6 +63,7 @@
         var pos = findCellCoordinates(cell);
         world.addTurtle(pos.col, pos.row, seed.attr("fill"));
         var thatNewTurtle = world.turtles[world.turtles.length-1];
+        thatNewTurtle.setOrientation(0,-1);
         rotate(thatNewTurtle, 180);
         seed.remove();
         growBranch(thatNewTurtle);
